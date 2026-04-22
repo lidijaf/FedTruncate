@@ -1,5 +1,5 @@
 server:
-  strategy: Mean
+  strategy: FedTruncate
   fraction_fit: 1.0
   fraction_eval: 1.0
   dataset_size: 1.0
@@ -18,7 +18,10 @@ attack:
   type: Label Flip
 defence:
   activation_round: 1
-general:
+  num_selected_clients: 10
+  B: 1.0
+  B0: 0.0
+  gamma: 1.0general:
   use_wandb: false
   random_seed: 42
 backend:

@@ -48,6 +48,7 @@ class Server(BaseModel):
         """
         strategy_types = [
             "Loss-Based-Clustering",
+            "FedTruncate",
             "Mean",
             "Median",
             "Trimmed-Mean",
@@ -135,6 +136,9 @@ class Defence(BaseModel):
     activation_round: int = 0
     num_selected_clients: int = 0
     server_dataset_percentage: float = 1.0
+    B: float = 1.0
+    B0: float = 0.0
+    gamma: float = 1.0
 
     @field_validator("server_dataset_percentage")
     def validate_percentages(cls, value: float, info: ValidationInfo):
@@ -145,21 +149,43 @@ class Defence(BaseModel):
         :return: Validated fields are between 0.0 and 1.0 or raises exception.
         """
         if value < 0.0 or value > 1.0:
-            raise ValueError(f"Under attack configuration: {info.field_name} must be between 0.0 and 1.0. Got {value}")
+            raise ValueError(
+                f"Under attack configuration: {info.field_name} must be between 0.0 and 1.0. Got {value}"
+            )
         return value
 
     @field_validator("activation_round", "num_selected_clients")
-    def validate_positive(cls, value: int, info: ValidationInfo):
+    def validate_positive_ints(cls, value: int, info: ValidationInfo):
         """
-        Validate individual fields are positive.
-        :param value: Field validator
-        :param info: Instance of Defence class
-        :return: Validated fields are positive values or raises exception.
+        Validate integer fields are positive.
         """
         if value <= 0:
-            raise ValueError(f"Under attack configuration: {info.field_name} must be positive. Got {value}")
+            raise ValueError(
+                f"Under attack configuration: {info.field_name} must be positive. Got {value}"
+            )
         return value
 
+    @field_validator("B", "gamma")
+    def validate_positive_floats(cls, value: float, info: ValidationInfo):
+        """
+        Validate FedTruncate thresholds that should be strictly positive.
+        """
+        if value <= 0:
+            raise ValueError(
+                f"Under attack configuration: {info.field_name} must be positive. Got {value}"
+            )
+        return value
+
+    @field_validator("B0")
+    def validate_nonnegative_float(cls, value: float, info: ValidationInfo):
+        """
+        Validate B0 is nonnegative.
+        """
+        if value < 0:
+            raise ValueError(
+                f"Under attack configuration: {info.field_name} must be nonnegative. Got {value}"
+            )
+        return value
 
 class General(BaseModel):
     use_wandb: bool

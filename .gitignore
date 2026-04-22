@@ -12,3 +12,11 @@ Thumbs.db
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
+
+data/
+datasets/
+outputs/
+__pycache__/
+*.pyc
+.venv/
+wandb/

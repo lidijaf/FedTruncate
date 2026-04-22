@@ -12,6 +12,7 @@ from src.strategies.mean_strategy import MeanStrategy
 from src.strategies.median_strategy import MedianStrategy
 from src.strategies.trimmed_mean_strategy import TrimmedMeanStrategy
 from src.task import load_server_data, set_dataloader, test
+from src.strategies.fedtruncate_strategy import FedTruncateStrategy
 
 
 def gen_evaluate_fn(model_config: ModelConfig):
@@ -96,6 +97,8 @@ def get_server_fn():
                 strategy = KrumStrategy(**strategy_args)
             case "Bulyan":
                 strategy = BulyanStrategy(**strategy_args)
+            case "FedTruncate":
+                strategy = FedTruncateStrategy(**strategy_args)
             case _:
                 raise ValueError(f"Invalid strategy {settings.server.strategy}")
         config = ServerConfig(num_rounds=settings.server.num_rounds)

@@ -1,20 +1,32 @@
 server:
-  strategy: Loss-Based-Clustering
+  strategy: FedTruncate
   fraction_fit: 1.0
   fraction_eval: 1.0
   dataset_size: 1.0
   num_rounds: 50
   batch_size: 64
+
 client:
   num_clients: 10
   batch_size: 64
   local_epochs: 5
+
 model:
   name: CIFAR10
   learning_rate: 0.001
+
+defence:
+  activation_round: 1
+  num_selected_clients: 10
+  server_dataset_percentage: 1.0
+  B: 0.15
+  B0: 0.0
+  gamma: 1.0
+
 general:
   use_wandb: false
   random_seed: 42
+
 backend:
   client_resources:
     num_cpus: 2.0
