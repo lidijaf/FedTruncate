@@ -3,7 +3,7 @@ server:
   fraction_fit: 1.0
   fraction_eval: 1.0
   dataset_size: 1.0
-  num_rounds: 50
+  num_rounds: 10
   batch_size: 64
 
 client:
@@ -22,6 +22,7 @@ defence:
   B: 0.15
   B0: 0.0
   gamma: 1.0
+  eps: 0.02
 
 general:
   use_wandb: false

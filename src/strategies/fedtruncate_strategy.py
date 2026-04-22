@@ -60,6 +60,7 @@ class FedTruncateStrategy(FedAvg):
         self.ft_b = getattr(settings.defence, "B", 1.0)
         self.ft_b0 = getattr(settings.defence, "B0", 0.0)
         self.ft_gamma = getattr(settings.defence, "gamma", 1.0)
+        self.ft_eps = getattr(settings.defence, "eps", 0.0)
         self.current_parameters = None
 
         print(">>> USING FEDTRUNCATE STRATEGY <<<")
@@ -267,8 +268,10 @@ class FedTruncateStrategy(FedAvg):
             client_params = fit_res.parameters
             client_loss = self._evaluate_parameters_loss(client_params)
 
-            if client_loss > current_global_loss * (1 + self.ft_b):
+            #if client_loss > current_global_loss * (1 + self.ft_b):
             #if client_loss > current_global_loss + alpha * self.ft_b:
+            eps = self.ft_eps
+            if client_loss > current_global_loss * (1 + self.ft_b) + eps:
                 candidate_entries.append(
                     (current_global_loss, client_proxy, current_global_parameters, True)
                 )

@@ -139,6 +139,7 @@ class Defence(BaseModel):
     B: float = 1.0
     B0: float = 0.0
     gamma: float = 1.0
+    eps: float = 0.0
 
     @field_validator("server_dataset_percentage")
     def validate_percentages(cls, value: float, info: ValidationInfo):
@@ -176,7 +177,7 @@ class Defence(BaseModel):
             )
         return value
 
-    @field_validator("B0")
+    @field_validator("B0", "eps")
     def validate_nonnegative_float(cls, value: float, info: ValidationInfo):
         """
         Validate B0 is nonnegative.
