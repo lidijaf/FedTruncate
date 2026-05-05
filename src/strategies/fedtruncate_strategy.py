@@ -252,6 +252,7 @@ class FedTruncateStrategy(FedAvg):
             return parameters_aggregated, {}
 
         # If we do not yet have a tracked global model, initialize it from normal averaging
+        # This is not the best approach, it is fine when we have no attacks in early rounds, but we may change it
         if self.current_parameters is None:
             self.current_parameters = ndarrays_to_parameters(aggregate_inplace(results))
 
@@ -269,9 +270,9 @@ class FedTruncateStrategy(FedAvg):
             client_loss = self._evaluate_parameters_loss(client_params)
 
             #if client_loss > current_global_loss * (1 + self.ft_b):
-            #if client_loss > current_global_loss + alpha * self.ft_b:
+            if client_loss > current_global_loss + alpha * self.ft_b:
             eps = self.ft_eps
-            if client_loss > current_global_loss * (1 + self.ft_b) + eps:
+            #if client_loss > current_global_loss * (1 + self.ft_b) + eps:
                 candidate_entries.append(
                     (current_global_loss, client_proxy, current_global_parameters, True)
                 )
@@ -303,8 +304,8 @@ class FedTruncateStrategy(FedAvg):
         # Step 8: rollback check
         gamma_t = self._gamma_t(server_round)
         rollback = 0
-        if new_global_loss > current_global_loss * (1 + self.ft_b0 * gamma_t):
-        #if new_global_loss > current_global_loss + alpha * self.ft_b0 * gamma_t:
+        #if new_global_loss > current_global_loss * (1 + self.ft_b0 * gamma_t):
+        if new_global_loss > current_global_loss + alpha * self.ft_b0 * gamma_t:
             new_global_parameters = current_global_parameters
             new_global_loss = current_global_loss
             rollback = 1
